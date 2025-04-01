@@ -39,21 +39,130 @@ function RenderAboutPage() {
 
 function RenderContactPage() {
     document.querySelector('main').innerHTML = `
-    <h1 class="title">Contact with me</h1>
-    <form id="contact-form">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    <label for="message">Message:</label>
-    <textarea id="message" name="message" required></textarea>
-    <button type="submit">Send</button>
-    </form>`;
+    <h1 class="title">Kontakt</h1>
+    <div class="contact-container">
+        <form id="contact-form" class="contact-form">
+            <div class="form-group">
+                <label for="name">Imię i nazwisko:</label>
+                <input type="text" id="name" name="name" required>
+                <span class="error-message" id="name-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+                <span class="error-message" id="email-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Wiadomość:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+                <span class="error-message" id="message-error"></span>
+            </div>
+            
+            <div class="form-group captcha-container">
+                <div id="recaptcha" class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                <span class="error-message" id="recaptcha-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="submit-button">Wyślij wiadomość</button>
+            </div>
+        </form>
+        
+        <div id="form-success" class="form-success" style="display: none;">
+            <h2>Dziękujemy za wiadomość!</h2>
+            <p>Odpowiemy najszybciej, jak to możliwe.</p>
+        </div>
+    </div>`;
    
+    // Dodanie skryptu reCAPTCHA
+    if (!document.getElementById('recaptcha-script')) {
+        const recaptchaScript = document.createElement('script');
+        recaptchaScript.id = 'recaptcha-script';
+        recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
+        recaptchaScript.async = true;
+        recaptchaScript.defer = true;
+        document.head.appendChild(recaptchaScript);
+    }
+    
+    // Walidacja formularza
     document.getElementById('contact-form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    alert('Form submitted!');
+        event.preventDefault();
+        
+        if (validateForm()) {
+            // Symulacja wysłania formularza (w rzeczywistej aplikacji byłby tutaj AJAX)
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+            
+            // W rzeczywistej aplikacji: wywołanie API
+            console.log('Formularz wysłany poprawnie:', {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
+            });
+        }
     });
+}
+
+function validateForm() {
+    let isValid = true;
+    
+    // Walidacja imienia
+    const nameInput = document.getElementById('name');
+    const nameError = document.getElementById('name-error');
+    
+    if (nameInput.value.trim() === '') {
+        nameError.textContent = 'Proszę podać imię i nazwisko';
+        isValid = false;
+    } else if (nameInput.value.trim().length < 3) {
+        nameError.textContent = 'Imię i nazwisko powinno zawierać co najmniej 3 znaki';
+        isValid = false;
+    } else {
+        nameError.textContent = '';
+    }
+    
+    // Walidacja email
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (emailInput.value.trim() === '') {
+        emailError.textContent = 'Proszę podać adres e-mail';
+        isValid = false;
+    } else if (!emailRegex.test(emailInput.value.trim())) {
+        emailError.textContent = 'Proszę podać poprawny adres e-mail';
+        isValid = false;
+    } else {
+        emailError.textContent = '';
+    }
+    
+    // Walidacja wiadomości
+    const messageInput = document.getElementById('message');
+    const messageError = document.getElementById('message-error');
+    
+    if (messageInput.value.trim() === '') {
+        messageError.textContent = 'Proszę wpisać wiadomość';
+        isValid = false;
+    } else if (messageInput.value.trim().length < 10) {
+        messageError.textContent = 'Wiadomość powinna zawierać co najmniej 10 znaków';
+        isValid = false;
+    } else {
+        messageError.textContent = '';
+    }
+    
+    // Walidacja reCAPTCHA
+    const recaptchaError = document.getElementById('recaptcha-error');
+    const recaptchaResponse = grecaptcha?.getResponse();
+    
+    if (!recaptchaResponse) {
+        recaptchaError.textContent = 'Proszę potwierdzić, że nie jesteś robotem';
+        isValid = false;
+    } else {
+        recaptchaError.textContent = '';
+    }
+    
+    return isValid;
 }
 
 function RenderGalleryPage() {
