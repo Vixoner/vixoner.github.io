@@ -43,7 +43,7 @@ function RenderContactPage() {
     <div class="contact-container">
         <form id="contact-form" class="contact-form">
             <div class="form-group">
-                <label for="name">Imię i nazwisko:</label>
+                <label for="name">Imię:</label>
                 <input type="text" id="name" name="name" required>
                 <span class="error-message" id="name-error"></span>
             </div>
@@ -71,8 +71,7 @@ function RenderContactPage() {
         </form>
         
         <div id="form-success" class="form-success" style="display: none;">
-            <h2>Dziękujemy za wiadomość!</h2>
-            <p>Odpowiemy najszybciej, jak to możliwe.</p>
+            <h2>Dzięki za wiadomość!</h2>
         </div>
     </div>`;
    
@@ -91,7 +90,6 @@ function RenderContactPage() {
         event.preventDefault();
         
         if (validateForm()) {
-            // Symulacja wysłania formularza (w rzeczywistej aplikacji byłby tutaj AJAX)
             document.getElementById('contact-form').style.display = 'none';
             document.getElementById('form-success').style.display = 'block';
             
@@ -113,10 +111,10 @@ function validateForm() {
     const nameError = document.getElementById('name-error');
     
     if (nameInput.value.trim() === '') {
-        nameError.textContent = 'Proszę podać imię i nazwisko';
+        nameError.textContent = 'Proszę podać imię';
         isValid = false;
     } else if (nameInput.value.trim().length < 3) {
-        nameError.textContent = 'Imię i nazwisko powinno zawierać co najmniej 3 znaki';
+        nameError.textContent = 'Imię powinno zawierać co najmniej 3 znaki';
         isValid = false;
     } else {
         nameError.textContent = '';
@@ -144,8 +142,8 @@ function validateForm() {
     if (messageInput.value.trim() === '') {
         messageError.textContent = 'Proszę wpisać wiadomość';
         isValid = false;
-    } else if (messageInput.value.trim().length < 10) {
-        messageError.textContent = 'Wiadomość powinna zawierać co najmniej 10 znaków';
+    } else if (messageInput.value.trim().length < 3) {
+        messageError.textContent = 'Wiadomość powinna zawierać co najmniej 3 znaki';
         isValid = false;
     } else {
         messageError.textContent = '';
